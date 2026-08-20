@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Brechó Online — Home</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- Header / Nav -->
+  <header class="site-header">
+    <div class="container header-inner">
+      <div class="brand">
+        <button class="btn-icon" id="toggle-dashboard" title="Abrir dashboard">☰</button>
+        <a href="#" class="logo">Brechó<span class="accent">Online</span></a>
+      </div>
+
+      <nav class="main-nav" id="main-nav">
+        <ul>
+          <li><a href="#" class="active">Home</a></li>
+          <li class="dropdown">
+            <button class="drop-btn">Produtos ▾</button>
+            <ul class="drop-menu">
+              <li><a href="#">Vestidos</a></li>
+              <li><a href="#">Casacos</a></li>
+              <li><a href="#">Acessórios</a></li>
+              <li><a href="#">Calçados</a></li>
+            </ul>
+          </li>
+          <li><a href="#">Sobre</a></li>
+          <li><a href="#">Contato</a></li>
+        </ul>
+      </nav>
+
+      <div class="header-actions">
+        <div class="search">
+          <input id="search-input" placeholder="Buscar itens, ex: vestido vermelho" />
+          <button id="search-btn" class="btn">🔍</button>
+        </div>
+        <button id="cart-btn" class="btn btn-primary">Carrinho (<span id="cart-count">0</span>)</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Dashboard sidebar (oculta por padrão) -->
+  <aside class="dashboard" id="dashboard">
+    <div class="dash-header">
+      <h3>Dashboard / Admin</h3>
+      <button id="close-dashboard" class="btn-icon">✕</button>
+    </div>
+
+    <section class="dash-section">
+      <h4>Adicionar produto</h4>
+      <form id="add-product-form">
+        <label>Nome<input name="name" required /></label>
+        <label>Categoria
+          <select name="category">
+            <option>Vestidos</option>
+            <option>Casacos</option>
+            <option>Acessórios</option>
+            <option>Calçados</option>
+          </select>
+        </label>
+        <label>Preço<input name="price" type="number" min="0" step="0.01" required /></label>
+        <label>Imagem (URL)<input name="image" /></label>
+        <button class="btn btn-primary" type="submit">Adicionar</button>
+      </form>
+    </section>
+
+    <section class="dash-section">
+      <h4>Gerenciar</h4>
+      <button id="clear-products" class="btn">Limpar produtos de demonstração</button>
+    </section>
+  </aside>
+
+  <!-- Main content -->
+  <main class="container main-grid">
+    <!-- Filters / Sidebar -->
+    <aside class="filters" id="filters">
+      <h3>Filtrar</h3>
+      <div class="filter-group">
+        <label>Categoria</label>
+        <select id="filter-category">
+          <option value="">Todas</option>
+          <option>Vestidos</option>
+          <option>Casacos</option>
+          <option>Acessórios</option>
+          <option>Calçados</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label>Preço</label>
+        <input type="range" id="filter-price" min="0" max="200" value="200" />
+        <div class="price-value">Até R$ <span id="price-max">200</span></div>
+      </div>
+
+      <div class="filter-group">
+        <label>Tamanho</label>
+        <div class="size-options">
+          <button class="size-btn">P</button>
+          <button class="size-btn">M</button>
+          <button class="size-btn">G</button>
+          <button class="size-btn">Único</button>
+        </div>
+      </div>
+
+      <div class="filter-group">
+        <button id="reset-filters" class="btn">Resetar filtros</button>
+      </div>
+    </aside>
+
+    <!-- Product list -->
+    <section class="products" id="products">
+      <div class="hero">
+        <h1>Bem-vinda ao Brechó Online</h1>
+        <p>Peças únicas selecionadas com carinho. Explore, filtre e adicione ao carrinho.</p>
+      </div>
+
+      <div class="products-grid" id="products-grid">
+        <!-- Cards serão inseridos via JS. Há um template abaixo para referência -->
+        <template id="product-template">
+          <article class="card product-card">
+            <img class="product-img" src="" alt="" />
+            <div class="card-body">
+              <h4 class="product-title"></h4>
+              <p class="product-category"></p>
+              <div class="card-footer">
+                <div class="price">R$ <span class="product-price"></span></div>
+                <div class="actions">
+                  <button class="btn btn-outline view-btn">Ver</button>
+                  <button class="btn btn-primary add-btn">Adicionar</button>
+                </div>
+              </div>
+            </div>
+          </article>
+        </template>
+      </div>
+    </section>
+  </main>
+
+  <!-- Cart modal / Drawer -->
+  <div class="modal hidden" id="cart-modal" aria-hidden="true">
+    <div class="modal-content">
+      <button class="btn-icon modal-close" id="close-cart">✕</button>
+      <h3>Seu Carrinho</h3>
+      <ul id="cart-list" class="cart-list"></ul>
+      <div class="cart-summary">
+        <div>Total: R$ <span id="cart-total">0.00</span></div>
+        <button id="checkout" class="btn btn-primary">Finalizar compra</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Product quick view modal -->
+  <div class="modal hidden" id="product-modal" aria-hidden="true">
+    <div class="modal-content">
+      <button class="btn-icon modal-close" id="close-product">✕</button>
+      <div class="modal-body" id="product-modal-body">
+        <!-- preenchido por JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Toasts -->
+  <div id="toasts" class="toasts" aria-live="polite"></div>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>© <span id="year"></span> Brechó Online — Feito com ♻️</p>
+    </div>
+  </footer>
+
+  <script src="app.js" defer></script>
+</body>
+</html>
